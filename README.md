@@ -1,1 +1,1 @@
-#Another typescript app
+#Another typescript app REACT NEXT Version 10.1.3
