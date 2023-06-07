@@ -1,6 +1,6 @@
 module.exports = {
 
-    webpack(config, options) {
+    webpack(config) {
         config.module.rules.push({
             loader: '@svgr/webpack',
             issuer: /\.[jt]sx?$/,
