@@ -2,7 +2,7 @@ import { RatingProps } from './Rating.props';
 import styles from './Rating.module.css';
 import cn from 'classnames';
 import StarIcon from './star.svg';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, KeyboardEvent } from 'react';
 
 
 export const Rating = ({ isEditable = false, rating, setRating, ...props }: RatingProps): JSX.Element => {
@@ -15,7 +15,7 @@ export const Rating = ({ isEditable = false, rating, setRating, ...props }: Rati
     const constructRating = (currentRating: number) => {
         const updatedArray = ratingArray.map((r: JSX.Element, i: number) => {
             return (
-                < StarIcon
+                <span
                     className={cn(styles.star, {
                         [styles.filled]: i < currentRating,
                         [styles.editable]: isEditable
@@ -23,7 +23,20 @@ export const Rating = ({ isEditable = false, rating, setRating, ...props }: Rati
                     onMouseEnter={() => changeDisplay(i + 1)}
                     onMouseLeave={() => changeDisplay(rating)}
                     onClick={() => onClick(i + 1)}
-                />
+                >
+                    <StarIcon
+                        className={cn(styles.star, {
+                            [styles.filled]: i < currentRating,
+                            [styles.editable]: isEditable
+                        })}
+                        onMouseEnter={() => changeDisplay(i + 1)}
+                        onMouseLeave={() => changeDisplay(rating)}
+                        onClick={() => onClick(i + 1)}
+                        tabIndex={isEditable ? 0 : -1}
+                        onKeyDown={(e: KeyboardEvent<SVGElement>) => isEditable && handleSpace(i + 1, e)}
+                    />
+                </span>
+
             );
         });
         setRatingArray(updatedArray);
@@ -38,6 +51,13 @@ export const Rating = ({ isEditable = false, rating, setRating, ...props }: Rati
 
     const onClick = (i: number) => {
         if (!isEditable || !setRating) {
+            return;
+        }
+        setRating(i);
+    };
+
+    const handleSpace = (i: number, e: KeyboardEvent<SVGElement>) => {
+        if (e.code != 'Space' || !setRating) {
             return;
         }
         setRating(i);
